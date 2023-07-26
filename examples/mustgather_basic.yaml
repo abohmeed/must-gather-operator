@@ -5,6 +5,7 @@ metadata:
 spec:
   caseID: '02527285'
   mustGatherType: "local-store"
+  sshHost: "192.168.2.15"
   filesystem: "/tmp"
   caseManagementAccountSecretRef:
     name: case-management-creds

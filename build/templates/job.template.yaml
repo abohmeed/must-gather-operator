@@ -23,7 +23,7 @@ spec:
       shareProcessNamespace: true
       containers:        
 {{- $timeout := .Spec.MustGatherTimeout}}
-{{- $type := .Spec.MustGatherType }}
+{{- $must-gather-type := .Spec.MustGatherType }}
 {{ range $index, $element := .Spec.MustGatherImages }}
       - command:
         - /bin/bash
@@ -58,12 +58,15 @@ spec:
             ((count++))
             sleep 30
           done
-          if [[ $type = "upload" ]]; then
+          if [[ $must-gather-type = "upload" ]]; then
             /usr/local/bin/upload
             exit 0
-          elif [[ $type = "local-store" ]]; then
+          elif [[ $must-gather-type = "local-store" ]]; then
             /usr/local/bin/local-store
             exit 0
+          else
+            echo "Type not set or unknown type: $must-gather-type"
+            exit 1
           fi
         image: THIS_STRING_WILL_BE_REPLACED_BUT_DONT_CHANGE_IT
         name: upload
@@ -121,6 +124,8 @@ spec:
           value: /must-gather-upload
         - name: internal_user
           value: "{{ .Spec.InternalUser }}"
+        - name: must-gather-type
+          value: {{ $must-gather-type }}
       serviceAccountName: {{ .Spec.ServiceAccountRef.Name }}
       volumes:
       - emptyDir: {}
