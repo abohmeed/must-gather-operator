@@ -16,7 +16,6 @@ FILENAME_PREFIX=${FILENAME_PREFIX:="must-gather"}
 CURRENT_TIMESTAMP=$(date --utc +%Y%m%d_%H%M%SZ)
 CSP_FILENAME=${FILENAME_PREFIX}-${CURRENT_TIMESTAMP}.tar.gz
 CSP_FILE="${must_gather_upload}/${CSP_FILENAME}"
-SFTP_OPTIONS="-o BatchMode=no -o StrictHostKeyChecking=no -b"
 
 if [ -z "${filesystem}" ] || [ -z "${ssh_username}" ] || [ -z "${ssh_password}" ];
 then
@@ -31,8 +30,7 @@ echo "Storing '${CSP_FILENAME}' to external filesystem ${filesystem}"
 
 echo "Moving ${CSP_FILE}..."
 export SSHPASS=${ssh_password}
-echo "running sshpass scp ${CSP_FILE} - ${ssh_username}@${remote_host}:${filesystem}"
-sshpass scp ${CSP_FILE} - ${ssh_username}@${remote_host}:${filesystem}
+sshpass scp -o StrictHostKeyChecking=no ${CSP_FILE} - ${ssh_username}@${remote_host}:${filesystem}
 
 if [ $? -eq 0 ];
 then
