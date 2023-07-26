@@ -24,6 +24,7 @@ spec:
       containers:        
 {{- $timeout := .Spec.MustGatherTimeout}}
 {{ range $index, $element := .Spec.MustGatherImages }} 
+{{ $type := .Spec.MustGatherType }}
       - command:
         - /bin/bash
         - -c 
@@ -57,7 +58,13 @@ spec:
             ((count++))
             sleep 30
           done
-          /usr/local/bin/upload
+          if [[ $type = "upload" ]]; then
+            /usr/local/bin/upload
+            exit 0
+          elif [[ $type = "local-store" ]]; then
+            /usr/local/bin/local-store
+            exit 0
+          fi
         image: THIS_STRING_WILL_BE_REPLACED_BUT_DONT_CHANGE_IT
         name: upload
         volumeMounts:
@@ -78,6 +85,7 @@ spec:
         - name: no_proxy
           value: {{ .Spec.ProxyConfig.NoProxy }}
         {{ end -}}
+        {{ if .Spec.MustGatherType = "upload" }}
         - name: username
           valueFrom:
             secretKeyRef:
@@ -90,6 +98,23 @@ spec:
               key: password
         - name: caseid
           value: "{{ .Spec.CaseID }}"
+        {{ end -}}
+        {{ if .Spec.MustGatherType = "local-store" }}
+        - name: ssh_username
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Spec.CaseManagementAccountSecretRef.Name }}
+              key: ssh_username
+        - name: ssh_password
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Spec.CaseManagementAccountSecretRef.Name }}
+              key: ssh_password
+        - name: filesystem
+          value: "{{ .Spec.Filesystem }}"
+        - name: remote_host
+          value: "{{ .Spec.SshHost }}"
+        {{ end -}}
         - name: must_gather_output
           value: /must-gather
         - name: must_gather_upload
@@ -102,4 +127,4 @@ spec:
         name: must-gather-output
       - emptyDir: {}
         name: must-gather-upload
-
+        

@@ -57,6 +57,19 @@ type MustGatherSpec struct {
 	// See documentation for further information.
 	// +kubebuilder:default:=true
 	InternalUser bool `json:"internalUser,omitempty"`
+	
+	// type of must gather execution
+	// possible vaules: upload, local-store
+	MustGatherType string `json:"mustGatherType"`
+
+	// The filesystem this must-gather will be stored into
+	Filesystem string `json:"filesystem,omitempty"`
+
+	// The remote host the must gather output will be stored into
+	SshHost string `json:"ssh_host,omitempty"`
+
+	// Secret containing the username and password field to be used to authenticate in remote host
+	RemoteHostSshSecretRef corev1.LocalObjectReference `json:"remoteHostSshSecretRef,omitempty"`
 }
 
 // +k8s:openapi-gen=true
