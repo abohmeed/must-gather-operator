@@ -23,7 +23,7 @@ spec:
       shareProcessNamespace: true
       containers:        
 {{- $timeout := .Spec.MustGatherTimeout}}
-{{- $must-gather-type := .Spec.MustGatherType }}
+{{ $must-gather-type := .Spec.MustGatherType }}
 {{ range $index, $element := .Spec.MustGatherImages }}
       - command:
         - /bin/bash
