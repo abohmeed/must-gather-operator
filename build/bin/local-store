@@ -30,7 +30,7 @@ echo "Storing '${CSP_FILENAME}' to external filesystem ${filesystem}"
 
 echo "Moving ${CSP_FILE}..."
 export SSHPASS=${ssh_password}
-sshpass scp -o StrictHostKeyChecking=no ${CSP_FILE} - ${ssh_username}@${remote_host}:${filesystem}
+sshpass scp -o StrictHostKeyChecking=no ${CSP_FILE} ${ssh_username}@${remote_host}:${filesystem}
 
 if [ $? -eq 0 ];
 then
