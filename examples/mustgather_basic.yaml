@@ -4,6 +4,8 @@ metadata:
   name: example-mustgather
 spec:
   caseID: '02527285'
+  mustGatherType: "local-store"
+  filesystem: "/tmp"
   caseManagementAccountSecretRef:
     name: case-management-creds
   serviceAccountRef:
