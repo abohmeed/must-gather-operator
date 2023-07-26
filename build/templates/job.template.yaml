@@ -39,7 +39,7 @@ spec:
         name: gather-{{ $index }}
         volumeMounts:
         - mountPath: /must-gather
-          name: mustGatherType
+          name: must-gather-output
 {{- end }}
       - command:
         - /bin/bash
@@ -129,7 +129,7 @@ spec:
       serviceAccountName: {{ .Spec.ServiceAccountRef.Name }}
       volumes:
       - emptyDir: {}
-        name: mustGatherType
+        name: must-gather-output
       - emptyDir: {}
         name: must-gather-upload
         
