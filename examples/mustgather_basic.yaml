@@ -1,12 +1,12 @@
 apiVersion: managed.openshift.io/v1alpha1
 kind: MustGather
 metadata:
-  name: example-mustgather
+  name: example-mustgather1
 spec:
   caseID: '02527285'
   mustGatherType: "local-store"
-  sshHost: "192.168.2.15"
-  filesystem: "/tmp"
+  sshHost: "192.168.2.176"
+  filesystem: "~/"
   caseManagementAccountSecretRef:
     name: case-management-creds
   serviceAccountRef:
