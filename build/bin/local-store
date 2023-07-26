@@ -30,7 +30,7 @@ tar --ignore-failed-read -caf "$must_gather_upload/${CSP_FILENAME}" $must_gather
 echo "Storing '${CSP_FILENAME}' to external filesystem ${filesystem}"
 
 echo "Moving ${CSP_FILE}..."
-export SSHPASS=${password}
+export SSHPASS=${ssh_password}
 sshpass scp ${CSP_FILE} - ${ssh_username}@${remote_host}:/${filesystem}
 
 if [ $? -eq 0 ];

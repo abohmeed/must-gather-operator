@@ -95,6 +95,16 @@ spec:
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
+              mustGatherType:
+                type: string
+                enum:
+                  - local-store
+                  - upload
+                default: upload
+              filesystem:
+                type: string
+              sshHost:
+                type: string
             required:
             - caseID
             - caseManagementAccountSecretRef
