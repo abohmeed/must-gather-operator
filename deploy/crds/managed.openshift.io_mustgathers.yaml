@@ -105,6 +105,8 @@ spec:
                 type: string
               sshHost:
                 type: string
+                minLength: 1
+                maxLength: 253
             required:
             - caseID
             - caseManagementAccountSecretRef

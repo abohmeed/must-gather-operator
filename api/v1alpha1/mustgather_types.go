@@ -69,7 +69,9 @@ type MustGatherSpec struct {
     Filesystem string `json:"filesystem,omitempty"`
 
 	// The remote host the must gather output will be stored into
-	SshHost string `json:"ssh_host,omitempty"`
+	// +kubebuilder:validation:MaxLength=253
+    // +kubebuilder:validation:MinLength=1
+    SshHost string `json:"sshHost,omitempty"`
 }
 
 // +k8s:openapi-gen=true
