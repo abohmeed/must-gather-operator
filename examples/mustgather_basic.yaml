@@ -1,7 +1,7 @@
 apiVersion: managed.openshift.io/v1alpha1
 kind: MustGather
 metadata:
-  name: example-mustgather1
+  name: example-mustgather
 spec:
   caseID: '02527285'
   mustGatherType: "local-store"
