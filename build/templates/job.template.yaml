@@ -85,7 +85,7 @@ spec:
         - name: no_proxy
           value: {{ .Spec.ProxyConfig.NoProxy }}
         {{ end -}}
-        {{ if .Spec.MustGatherType = "upload" }}
+        {{ if eq .Spec.MustGatherType "upload" }}
         - name: username
           valueFrom:
             secretKeyRef:
@@ -99,7 +99,7 @@ spec:
         - name: caseid
           value: "{{ .Spec.CaseID }}"
         {{ end -}}
-        {{ if .Spec.MustGatherType = "local-store" }}
+        {{ if eq .Spec.MustGatherType "local-store" }}
         - name: ssh_username
           valueFrom:
             secretKeyRef:
