@@ -23,7 +23,7 @@ spec:
       shareProcessNamespace: true
       containers:        
 {{- $timeout := .Spec.MustGatherTimeout}}
-{{ $must-gather-type := .Spec.MustGatherType }}
+{{- $mustGatherType := .Spec.MustGatherType }}
 {{ range $index, $element := .Spec.MustGatherImages }}
       - command:
         - /bin/bash
@@ -39,7 +39,7 @@ spec:
         name: gather-{{ $index }}
         volumeMounts:
         - mountPath: /must-gather
-          name: must-gather-output
+          name: mustGatherType
 {{- end }}
       - command:
         - /bin/bash
@@ -72,7 +72,7 @@ spec:
         name: upload
         volumeMounts:
         - mountPath: /must-gather
-          name: must-gather-output
+          name: mustGatherType
         - mountPath: /must-gather-upload
           name: must-gather-upload
         env:
@@ -129,7 +129,7 @@ spec:
       serviceAccountName: {{ .Spec.ServiceAccountRef.Name }}
       volumes:
       - emptyDir: {}
-        name: must-gather-output
+        name: mustGatherType
       - emptyDir: {}
         name: must-gather-upload
         
