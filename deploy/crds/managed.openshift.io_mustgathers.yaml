@@ -99,6 +99,8 @@ spec:
                 type: string
                 enum:
                   - s3
+              awsBucket:
+                type: string
             required:
             - caseID
             - caseManagementAccountSecretRef
