@@ -9,3 +9,6 @@ spec:
   serviceAccountRef:
     name: must-gather-admin
 
+  clean: true
+  mustGatherCleanConfigMapRef:
+    name: mustgather-clean-configmap

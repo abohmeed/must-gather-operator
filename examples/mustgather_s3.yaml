@@ -25,3 +25,6 @@ spec:
     name: must-gather-admin
   target: s3
   awsBucket: mustgather01
+  clean: true
+  mustGatherCleanConfigMapRef:
+    name: mustgather-clean-configmap
