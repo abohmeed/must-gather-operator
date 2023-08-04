@@ -58,6 +58,72 @@ spec:
     https_proxy: https://my_http_proxy
     no_proxy: master-api
 ```
+## Mustgather Clean support
+You can optionally enable [Must Gather Clean](https://github.com/openshift/must-gather-clean), an obfuscation tool that is used to mask sensitive information from the logs (for example, IP address, Secrets, etc.)
+
+Must Gather Clean works by reading a YAML configuration file. This file can be loaded in a ConfigMap and referenced in the Custom Resource. 
+
+An example CR that enables Must Gather Clean could look as follows:
+```yaml
+apiVersion: managed.openshift.io/v1alpha1
+kind: MustGather
+metadata:
+  name: example-mustgather
+spec:
+  caseID: '02527285'
+  caseManagementAccountSecretRef:
+    name: case-management-creds
+  serviceAccountRef:
+    name: must-gather-admin
+  clean: true
+  mustGatherCleanConfigMapRef:
+    name: mustgather-clean-configmap
+```
+The ConfigMap must be applied to the cluster before creating the CR (for example, `oc apply -f examples/mustgather_clean_configmap.yaml`)
+
+This is a sample ConfigMap that contains an example Must Gather Clean configuration taken from the official docs:
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mustgather-clean-configmap
+  namespace: openshift-must-gather-operator
+data:
+  config.yaml: |
+    config:
+      obfuscate:
+        - type: IP
+          replacementType: Consistent
+          target: All
+        - type: MAC
+          replacementType: Consistent
+          target: All
+        - type: Domain
+          replacementType: Consistent
+          target: All
+          domainNames:
+            - "rhcloud.com"
+            - "dev.rhcloud.com"
+      omit:
+        - type: Kubernetes
+          kubernetesResource:
+            kind: "Secret"
+        - type: Kubernetes
+          kubernetesResource:
+            kind: "ConfigMap"
+        - type: Kubernetes
+          kubernetesResource:
+            kind: CertificateSigningRequest
+            apiVersion: certificates.k8s.io/v1
+        - type: Kubernetes
+          kubernetesResource:
+            kind: CertificateSigningRequestList
+            apiVersion: certificates.k8s.io/v1
+        - type: Kubernetes
+          kubernetesResource:
+            kind: MachineConfig
+            apiVersion: machineconfiguration.openshift.io/v1
+```
 
 ## Garbage collection
 
@@ -129,6 +195,18 @@ spec:
   target: s3
   awsBucket: mustgather01
 ```
+### Local S3 bucket over TLS/SSL
+If you are running a private S3 bucket (like on Minio, for example), you will probably connect to it over TLS with a private CA. In this case, awscli must trust this certificate for the operation to work. 
+
+You can add a certificate and the operator will mount it to a file under `/ssl` and configure AWSCLI to trust it. Add the following to the Secret:
+```yaml
+ssl_cert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUI4akNDQVplZ0F3SUJBZ0lRUlRGUXpmN202dmJPWTFOd3AxYzNSVEFLQmdncWhrak9QUVFEQWpCQU1Sd3cKR2dZRFZRUUtFeE5EWlhKMFoyVnVJRVJsZG1Wc2IzQnRaVzUwTVNBd0hnWURWUVFMREJkaGFHMWxaRUJ2Y0dWdQpjMmhwWm5RZ0tFRm9iV1ZrS1RBZUZ3MHlNekE0TURRd09UQTNORFJhRncweU5EQTRNRE13T1RBM05EUmFNRUF4CkhEQWFCZ05WQkFvVEUwTmxjblJuWlc0Z1JHVjJaV3h2Y0cxbGJuUXhJREFlQmdOVkJBc01GMkZvYldWa1FHOXcKWlc1emFHbG1kQ0FvUVdodFpXUXBNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUU5QkpybjZLOQpqcWdtWXp5WjNrMWVlOUZ4ejdTU2lKaGhEYWJxdyt5TlFMWEN0ZTgxaWhTMUxQUXpSSWo5UU5GWENLT2RJbGdZCkpkQUF5Q1Q0WUljOG1xTnpNSEV3RGdZRFZSMFBBUUgvQkFRREFnS2tNQk1HQTFVZEpRUU1NQW9HQ0NzR0FRVUYKQndNQk1BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZQME9SZmlpY01qdzdBd09pQmhFQ1dvWgo0dCtyTUJvR0ExVWRFUVFUTUJHQ0NXeHZZMkZzYUc5emRJY0V3S2dDRVRBS0JnZ3Foa2pPUFFRREFnTkpBREJHCkFpRUEvcmp2b3hUQUxlSklNRFpVdllUem9TWGpGeDhLczlUUXUrV3NNVDQ2SXNFQ0lRRDM4T3p4WW9nT3ZZTzEKUTZja2NaT2RrL1l1Rk5CUWx6MHNTSjgvdlkrdHpnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+```
+This is a sample CA that AWSCLI will be configured to trust. You also need to enable Private TLS/SSL communcation in the CR itself:
+```yaml
+privateSsl: true
+```
+You may want to use HTTPS instead of HTTP when defining the endpoint_url if you are using private TLS/SSL.
 ## Local Development
 
 Execute the following steps to develop the functionality locally. It is recommended that development be done using a cluster with `cluster-admin` permissions.

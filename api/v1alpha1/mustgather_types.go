@@ -72,6 +72,13 @@ type MustGatherSpec struct {
 	// this is an optional parameter.
 	// +kubebuilder:default:=false
 	PrivateSsl bool `json:"privateSsl,omitempty"`
+	// A flag to specify whether to run MustGather clean before uploading the files
+	// +kubebuilder:default:=false
+	Clean bool `json:"clean,omitempty"`
+
+	// the configMap that is used to populate the configuration file for the must gather clean command (if clean = true)
+	// +kubebuilder:validation:Optional
+	MustGatherCleanConfigMapRef corev1.LocalObjectReference `json:"mustGatherCleanConfigMapRef,omitempty"`
 }
 
 // +k8s:openapi-gen=true

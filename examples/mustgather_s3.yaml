@@ -27,3 +27,6 @@ spec:
   target: s3
   awsBucket: mustgather01
   privateSsl: true
+  clean: true
+  mustGatherCleanConfigMapRef:
+    name: mustgather-clean-configmap
